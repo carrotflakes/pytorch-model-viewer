@@ -9,24 +9,33 @@
   display: flex;
 }
 
-.App > div:nth-child(1) {
+.App>div:nth-child(1) {
   flex: 0 0;
 }
 
-.App > div:nth-child(2) {
+.App>div:nth-child(2) {
   flex: 1 1 auto;
   padding: 8px;
   overflow: auto;
 }
 
-.list {
+.lists {
   padding: 8px;
+  color: #666;
 }
 
-.list > div {
+.lists>h3 {
+  margin: 8px 0;
+}
+
+.lists>div>div {
   cursor: pointer;
 }
 
-.list > div:hover {
+.lists>div>div[data-current="true"] {
+  color: #281eba;
+}
+
+.lists>div>div:hover {
   background-color: #f0f0f0;
 }

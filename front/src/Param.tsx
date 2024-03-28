@@ -2,31 +2,32 @@ import { useEffect, useMemo, useRef, useState } from "react"
 
 const cache = new Map<string, Float32Array>()
 
-export function Param({ meta }: { meta: { name: string, shape: number[], type: string } }) {
+export function Param({ modelName, meta }: { modelName: string, meta: { name: string, shape: number[], type: string } }) {
+  const paramPath = `${modelName}/${meta.name}`
   const [value, setValue] = useState<Float32Array | null>(null)
   const [scale, setScale] = useState(1)
   const [vScale, setVScale] = useState(1)
 
   useEffect(() => {
-    setValue(null)
+    const cached = cache.get(paramPath) ?? null
+    setValue(cached)
 
-    if (cache.has(meta.name)) {
-      setValue(cache.get(meta.name) ?? null)
+    if (cached) {
       return
     }
 
-    fetch(`/params/${meta.name}`)
+    fetch(`/models/${modelName}/params/${meta.name}`)
       .then((res) => res.blob())
       .then((data) => {
         const reader = new FileReader()
         reader.onload = () => {
           const array = new Float32Array(reader.result as ArrayBuffer)
-          cache.set(meta.name, array)
+          cache.set(paramPath, array)
           setValue(array)
         }
         reader.readAsArrayBuffer(data)
       })
-  }, [meta.name])
+  }, [meta.name, modelName, paramPath])
 
   const minMax = useMemo(() => {
     if (!value)

@@ -5,5 +5,9 @@
 ## Usage
 
 ``` sh
-python main.py path/to/model.pth
+cd front
+npm install
+npm run build
+cd ..
+python main.py path/to/models_dir
 ```

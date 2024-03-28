@@ -1,15 +1,26 @@
-from flask import Flask, Response, jsonify, send_from_directory
+from flask import Flask, Response, jsonify
 import torch
 import sys
+import os
 
-model_file_path = sys.argv[1]
+models_dir_path = sys.argv[1]
 
-model = torch.load(model_file_path, map_location='cpu')
+models = {}
 
 app = Flask(__name__, static_folder='front/dist', static_url_path='')
 
-@app.route('/params', methods=['GET'])
-def get_params():
+@app.route('/models', methods=['GET'])
+def get_models():
+    models = [f for f in os.listdir(models_dir_path) if f.endswith('.pt') or f.endswith('.pth')]
+    return jsonify(models)
+
+@app.route('/models/<model_name>/params', methods=['GET'])
+def get_params(model_name):
+    model_file_path = os.path.join(models_dir_path, model_name)
+    if model_file_path not in models:
+        models[model_file_path] = torch.load(model_file_path, map_location='cpu')
+    model = models[model_file_path]
+
     model_details = [
         {
             "name": key,
@@ -20,8 +31,13 @@ def get_params():
     ]
     return jsonify(model_details)
 
-@app.route('/params/<path:path>', methods=['GET'])
-def get_param(path):
+@app.route('/models/<model_name>/params/<path:path>', methods=['GET'])
+def get_param(model_name, path):
+    model_file_path = os.path.join(models_dir_path, model_name)
+    if model_file_path not in models:
+        models[model_file_path] = torch.load(model_file_path, map_location='cpu')
+    model = models[model_file_path]
+
     tensor = model.get(path, None)
 
     if tensor is None or not torch.is_tensor(tensor) or tensor.dtype != torch.float:
