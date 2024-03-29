@@ -9,6 +9,12 @@ models = {}
 
 app = Flask(__name__, static_folder='front/dist', static_url_path='')
 
+@app.route('/reset', methods=['POST'])
+def reset():
+    global models
+    models = {}
+    return Response("Reset successful", status=200)
+
 @app.route('/models', methods=['GET'])
 def get_models():
     models = [f for f in os.listdir(models_dir_path) if f.endswith('.pt') or f.endswith('.pth')]

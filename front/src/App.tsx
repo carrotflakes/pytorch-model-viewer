@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { Param } from './Param'
+import { clearCache } from './paramCache'
 
 type ParamMeta = { name: string, shape: number[], type: string }
 
@@ -30,6 +31,11 @@ function App() {
       })
   }, [selectedModelName, models])
 
+  const refresh = () => {
+    fetch('/reset', { method: 'POST' })
+    clearCache()
+  }
+
   const params = selectedModelName ? models.find((model) => model.name === selectedModelName)?.params ?? [] : []
   const selectedParam = params.find((param) => param.name === selectedParamName)
 
@@ -49,6 +55,9 @@ function App() {
             <div key={index} onClick={() => setSelectedParamName(param.name)}
               data-current={selectedParamName === param.name}>{param.name}</div>
           ))}
+        </div>
+        <div>
+          <button onClick={refresh}>Refresh</button>
         </div>
       </div>
       {

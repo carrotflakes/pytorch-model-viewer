@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import './Param.css'
-
-const cache = new Map<string, Float32Array>()
+import { cache } from "./paramCache"
 
 export function Param({ modelName, meta }: { modelName: string, meta: { name: string, shape: number[], type: string } }) {
   const paramPath = `${modelName}/${meta.name}`
