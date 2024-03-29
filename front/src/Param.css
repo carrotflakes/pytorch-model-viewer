@@ -1,0 +1,12 @@
+.Param {
+  position: absolute;
+}
+
+.paramInfo {
+  position: fixed;
+  bottom: 0;
+
+  background: #fffe;
+  border-radius: 8px 8px 0 0;
+  padding: 0 8px;
+}
