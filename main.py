@@ -9,6 +9,10 @@ models = {}
 
 app = Flask(__name__, static_folder='front/dist', static_url_path='')
 
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
 @app.route('/reset', methods=['POST'])
 def reset():
     global models
